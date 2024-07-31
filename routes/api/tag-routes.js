@@ -1,15 +1,17 @@
-const router = require('express').Router();
-const { Tag, Product, ProductTag } = require('../../models');
+const router = require("express").Router();
+const { Tag, Product, ProductTag } = require("../../models");
 
 // The `/api/tags` endpoint
 
-router.get('/', (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const Tags = await Tag.findAll({
-      include: [{
-        model: Product,
-        through: ProductTag
-      }]
+      include: [
+        {
+          model: Product,
+          through: ProductTag,
+        },
+      ],
     });
     res.status(200).json(Tags);
   } catch (err) {
@@ -19,15 +21,17 @@ router.get('/', (req, res) => {
   // be sure to include its associated Product data
 });
 
-router.get('/:id', (req, res) => {
+router.get("/:id", async (req, res) => {
   // find a single tag by its `id`
   // be sure to include its associated Product data
   try {
     const aTag = await Tag.findByPk(req.params.id, {
-      include: [{
-        model: Product,
-        through: ProductTag
-      }]
+      include: [
+        {
+          model: Product,
+          through: ProductTag,
+        },
+      ],
     });
     if (!aTag) {
       res.status(404).json({ message: "oops, try again" });
@@ -39,7 +43,7 @@ router.get('/:id', (req, res) => {
   }
 });
 
-router.post('/', (req, res) => {
+router.post("/", async (req, res) => {
   // create a new tag
   try {
     const newTag = await Tag.create(req.body);
@@ -49,37 +53,37 @@ router.post('/', (req, res) => {
   }
 });
 
-router.put('/:id', (req, res) => {
+router.put("/:id", async (req, res) => {
   // update a tag's name by its `id` value
   try {
     const updatedTag = await Tag.update(req.body, {
       where: {
-        id: req.params.id
-      }
+        id: req.params.id,
+      },
     });
     if (!updatedTag) {
       res.status(404).json({ message: "oops, try again" });
       return;
     }
-    res.status(200).json(updatedTag)
+    res.status(200).json(updatedTag);
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-router.delete('/:id', (req, res) => {
+router.delete("/:id", async (req, res) => {
   // delete on tag by its `id` value
   try {
     const deleteTag = await Tag.destroy(req.body, {
       where: {
-        id: req.params.id
-      }
+        id: req.params.id,
+      },
     });
     if (!deleteTag) {
       res.status(404).json({ message: "oops, try again" });
       return;
     }
-    res.status(200).json(deleteTag)
+    res.status(200).json(deleteTag);
   } catch (err) {
     res.status(500).json(err);
   }
